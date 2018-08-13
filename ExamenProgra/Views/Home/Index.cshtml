@@ -1,0 +1,47 @@
+﻿<div class="jumbotron">
+    <h4>COLEGIO MONTESQUIEU</h4>
+</div>
+<div class="row">
+    <div>
+        <h3>Buscar por ID</h3>
+        <input type="text" id="prodId" size="5" />
+        <input type="button" value="Buscar" onclick="find();" />
+        <p id="product" />
+    </div>
+    <div>
+        <h3>Listado Alumnos</h3>
+        <ul id="alumnos" />
+    </div>
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script>
+        var uri = 'http://localhost:59824/api/Alumnos';
+
+        $(document).ready(function () {
+            // Envía un request AJAX
+            $.getJSON(uri)
+                .done(function (data) {
+                    //Si es exitoso, 'data' contiene la lista de productos
+                    $.each(data, function (key, item) {
+                        // Hace una lista dinamica con los items
+                        $('<li>', { text: formatItem(item) }).appendTo($('#alumnos'));
+                    });
+                });
+        });
+
+        function formatItem(item) {
+            return 'id: ' + item.IdAlumno + ' -- Nombre: ' + item.Nombres + ' ' + item.Apellidos + ', Correo: ' + item.Correo + ', Carne: ' + item.Carne + ', Curso: ' + item.Curso;
+        }
+
+        function find() {
+            var id = $('#prodId').val();
+            $.getJSON(uri + '/' + id)
+                .done(function (data) {
+                    $('#product').text(formatItem(data));
+                }) //jqXHR (jQuery XMLHttpRequest) Reemplza el objeto XMLHttpRequest (Objeto navito del browser).
+                .fail(function (jqXHR, textStatus, err) {
+                    $('#product').text('Error: ' + err + textStatus);
+                });
+        }</script>
+</div>
+
